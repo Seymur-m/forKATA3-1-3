@@ -1,18 +1,90 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Spring Security Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>User Panel</title>
+    <style>
+        .nav-link.custom-rounded {
+            border-radius: 4px; /* Измените это значение для более или менее закругленных углов */
+        }
+        .center-abs {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%); /* Смещаем блок на половину его ширины влево */
+        }
+    </style>
 </head>
+
 <body>
+<nav class="navbar navbar-expand-xl navbar-dark bg-dark text-white">
+    <div class="container-fluid">
+        <!-- Отображение email и ролей пользователя -->
+        <span th:text="${currentuser.email} + ' with roles: ' + ${currentuser.roles.get(0)}"></span>
 
+        <!-- Кнопка выхода -->
+        <div class="d-flex ms-auto">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn btn-light" style="margin-right: 10px;">Logout</button>
+            </form>
+        </div>
+    </div>
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Боковая панель -->
+        <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active custom-rounded bg-primary text-white border-radius: 4px badge-primary "
+                           id="admin-panel" data-bs-toggle="tab" href="#admin-panel-content" role="tab"
+                           aria-controls="admin-panel-content" aria-selected="true">
+                            <i class="bi bi-table"></i>
+                            User Panel
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
 
-<h1>User, welcome spring boot security page!</h1>
+        <div class="col-md-9 col-lg-10" id="admin-panel-content">
+            <div class="card w-100">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="users-table" role="tabpanel"
+                         aria-labelledby="all-users-tab">
+                        <h1>User information-page</h1>
+                        <h2 style="margin: 15px; padding: 10px;">About user</h2>
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">UserName</th>
+                                <th scope="col">Role</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <th scope="row" th:text="${currentuser.id}">1</th>
+                            <td th:text="${currentuser.name}">Mark</td>
+                            <td th:text="${currentuser.email}">Otto</td>
+                            <td th:text="${currentuser.username}">@mdo</td>
+                            <td th:text="${currentuser.roles.get(0).toString()}">@mdo</td>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-
-<form th:action="@{/logout}" method="post">
-    <button type="submit">Выйти</button>
-</form>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+</script>
 
 </body>
 </html>
