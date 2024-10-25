@@ -1,13 +1,12 @@
 package ru.kata.spring.boot_security.demo.model;
 
-import javax.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+
+import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
-
 
 @Entity
 @Table(name = "users")
@@ -22,7 +21,12 @@ public class User implements UserDetails {
     private String username;
     private String password;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
     private List<Role> roles;
 
     public User() {}
@@ -33,21 +37,6 @@ public class User implements UserDetails {
         this.username = username;
         this.password = password;
         this.roles = roles;
-    }
-
-    public void setUser(User user) {
-        this.name = user.name;
-        this.email = user.email;
-        this.username = user.username;
-        this.password = user.password;
-        this.roles.get(0).setRoleName((user.getRoles().get(0).getRoleName()));
-    }
-
-    public void setUserWithoutRoles(User user) {
-        this.name = user.name;
-        this.email = user.email;
-        this.username = user.username;
-        this.password = user.password;
     }
 
     public Long getId() {
@@ -74,6 +63,22 @@ public class User implements UserDetails {
         this.email = email;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public List<Role> getRoles() {
         return roles;
     }
@@ -85,24 +90,6 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     @Override

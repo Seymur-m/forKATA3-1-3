@@ -11,6 +11,7 @@ import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
 
+
 @Component
 public class DataInitializer {
 
@@ -26,34 +27,31 @@ public class DataInitializer {
     }
 
     @PostConstruct
-    public void init() {
-        // Создаем роли
-        Role adminRole = new Role("ADMIN");
-        Role userRole = new Role("USER");
+public void init() {
 
-        // Создаем пользователей с зашифрованными паролями
-        User user1 = new User();
-        user1.setName("Admin User");
-        user1.setEmail("admin@example.com");
-        user1.setUsername("admin");
-        user1.setPassword(passwordEncoder.encode("admin")); // шифруем пароль
+    Role adminRole = new Role("ADMIN");
+    Role userRole = new Role("USER");
 
-        User user2 = new User();
-        user2.setName("Regular User");
-        user2.setEmail("user@example.com");
-        user2.setUsername("user");
-        user2.setPassword(passwordEncoder.encode("user")); // шифруем пароль
+    roleRepository.save(adminRole);
+    roleRepository.save(userRole);
 
-        // Присваиваем роли
-        user1.setRoles(Arrays.asList(adminRole));
-        user2.setRoles(Arrays.asList(userRole));
 
-        // Устанавливаем связь между ролями и пользователями
-        adminRole.setUser(user1);
-        userRole.setUser(user2);
+    User user1 = new User();
+    user1.setName("Admin User");
+    user1.setEmail("admin@example.com");
+    user1.setUsername("admin");
+    user1.setPassword(passwordEncoder.encode("admin"));
+    user1.setRoles(Arrays.asList(adminRole));
 
-        // Сохраняем пользователей (роли будут сохранены автоматически благодаря каскадированию)
-        userRepository.save(user1);
-        userRepository.save(user2);
-    }
+    User user2 = new User();
+    user2.setName("Regular User");
+    user2.setEmail("user@example.com");
+    user2.setUsername("user");
+    user2.setPassword(passwordEncoder.encode("user"));
+    user2.setRoles(Arrays.asList(userRole));
+
+    userRepository.save(user1);
+    userRepository.save(user2);
+}
+
 }
