@@ -18,22 +18,4 @@ public class RoleServiceImpl implements RoleService {
         roleRepository.save(role);
     }
 
-    @Transactional
-    public void saveAll(List<Role> roles) {
-        roleRepository.saveAll(roles);
-    }
-
-    @Transactional
-    public void deleteRoles(List<Role> roles) {
-        roleRepository.deleteAll(roles);
-    }
-
-    @Transactional
-    public List<Role> findAll() {
-        return roleRepository.findAll();
-    }
-
-    public List<Role> findRolesByIds(List<Long> roleIds) {
-        return roleRepository.findAllById(roleIds);
-    }
 }

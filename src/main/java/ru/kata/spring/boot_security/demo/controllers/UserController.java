@@ -10,33 +10,34 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.service.RoleServiceImpl;
+import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class UserController {
-    private final UserServiceImpl userServiceImpl;
-    private final RoleServiceImpl roleServiceImpl;
+    @Autowired
+    private UserServiceImpl userService;
 
     @Autowired
-    public UserController(UserServiceImpl userServiceImpl, RoleServiceImpl roleServiceImpl) {
-        this.userServiceImpl = userServiceImpl;
-        this.roleServiceImpl = roleServiceImpl;
-    }
+    private RoleService roleService;
+    @Autowired
+    private UserServiceImpl userServiceImpl;
 
     @GetMapping("/admin")
     public String forAdmin(@AuthenticationPrincipal User currentUser, Model model) {
-        model.addAttribute("listUsers", userServiceImpl.findAll());
+        model.addAttribute("listUsers", userService.findAll());
         model.addAttribute("user", new User());
-        model.addAttribute("allRoles", roleServiceImpl.findAll()); // Добавляем список всех ролей
+        model.addAttribute("role", new Role());
         model.addAttribute("currentuser", currentUser);
         return "users";
     }
 
     @GetMapping("/user")
     public String forUser(@AuthenticationPrincipal User currentUser, Model model) {
+        User user = (User) userService.loadUserByUsername(currentUser.getUsername());
         model.addAttribute("currentuser", currentUser);
         return "user";
     }
@@ -44,30 +45,31 @@ public class UserController {
     @GetMapping("/admin/add")
     public String showAddUserForm(Model model) {
         model.addAttribute("user", new User());
-        model.addAttribute("allRoles", roleServiceImpl.findAll());
+        model.addAttribute("role", new Role());
         return "add-user";
     }
 
     @PostMapping("/admin/save")
-    public String saveUser(@ModelAttribute("user") User user, @RequestParam("roleIds") List<Long> roleIds) {
-        // Получаем список ролей по их ID
-        List<Role> roles = roleServiceImpl.findRolesByIds(roleIds);
-        user.setRoles(roles); // Устанавливаем роли пользователю
-        userServiceImpl.saveUserWithRole(user);
-        return "redirect:/admin";
+    public String saveUser(@ModelAttribute("user") User user, @ModelAttribute("role") Role role) {
+        List<Role> roles = new ArrayList<>();
+        roles.add(role);
+        user.setRoles(roles);
+        userService.saveUserWithRole(user);
+        return "redirect:/admin/";
     }
 
     @PostMapping("/admin/delete")
     public String deleteUser(@RequestParam("id") Long id) {
-        userServiceImpl.delete(id);
-        return "redirect:/admin";
+        userService.delete(id);
+        return "redirect:/admin/";
     }
 
     @PostMapping("/admin/edit")
     public String editUser(@RequestParam("id") Long id, Model model) {
         User user = userServiceImpl.findById(id);
+        Role role = user.getRoles().get(0);
         model.addAttribute("user", user);
-        model.addAttribute("allRoles", roleServiceImpl.findAll()); // Передаем все доступные роли
+        model.addAttribute("role", role);
         return "add-user";
     }
 }

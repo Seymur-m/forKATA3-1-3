@@ -3,7 +3,6 @@ package ru.kata.spring.boot_security.demo.model;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
@@ -21,7 +20,7 @@ public class User implements UserDetails {
     private String username;
     private String password;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -29,7 +28,8 @@ public class User implements UserDetails {
     )
     private List<Role> roles;
 
-    public User() {}
+    public User() {
+    }
 
     public User(String name, String email, List<Role> roles, String username, String password) {
         this.name = name;
@@ -41,10 +41,6 @@ public class User implements UserDetails {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -110,16 +106,6 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public void clearAndSetRoles(Role role) {
-        roles.clear();
-        roles.add(role);
-    }
-
-    public void clearAndSetRoles(List<Role> roles) {
-        roles.clear();
-        this.roles.addAll(roles);
     }
 
     @Override
