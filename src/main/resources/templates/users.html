@@ -6,7 +6,30 @@
     <title>Admin Panel with Vertical Tabs</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* Стили для активной вкладки */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Минимальная высота на весь экран */
+        }
+
+        .sidebar {
+            height: 100vh; /* Высота на весь экран */
+        }
+
+        .row {
+            display: flex;
+        }
+
+        .col-md-3 {
+            background-color: #f8f9fa;
+        }
+        /* Ваши существующие стили */
         .nav-pills .nav-link.active {
             background-color: #007bff; /* цвет primary */
             color: white;
@@ -15,7 +38,8 @@
         .text-center-custom {
             text-align: center;
             display: block; /* Чтобы label занимал всю доступную ширину */
-            width: 100%; /* Чтобы label занимал всю доступную ширину */
+            width: 100%;
+            height: 100%;     /* Чтобы label занимал всю доступную ширину */
         }
 
         .form-group-center {
@@ -24,7 +48,8 @@
 
         .custom-width {
             display: inline-block; /* Чтобы поля были выровнены по центру */
-            width: 300px; /* Установите желаемую ширину полей */
+            width: max-content;/* Установите желаемую ширину полей */
+            height: max-content;/* Установите желаемую ширину полей */
         }
     </style>
 </head>
@@ -140,7 +165,7 @@
                                         </div>
                                         <div class="mb-3 form-group-center">
                                             <label for="setUserRole" class="form-label text-center-custom" style="font-weight: bold;">Role</label>
-                                            <select class="form-select" id="setUserRole" th:field="*{role.roleName}">
+                                            <select class="form-select" id="setUserRole" th:field="*{role.roleName}" multiple style="width: 200px; height: 100px; padding: 5px;">
                                                 <option value="USER">USER</option>
                                                 <option value="ADMIN">ADMIN</option>
                                             </select>
@@ -228,10 +253,10 @@
                         <input type="password" class="form-control custom-width" id="userPassword + ${user.id}" name="password">
                     </div>
                     <div class="mb-3 form-group-center">
-                        <label for="userRole + ${user.id}" class="form-label text-center-custom" style="font-weight: bold;">Role</label>
-                        <select class="form-select" id="userRole + ${user.id}" th:field="*{role.roleName}">
-                            <option value="USER" th:selected="${user.roles.contains('USER')}">USER</option>
-                            <option value="ADMIN" th:selected="${user.roles.contains('ADMIN')}">ADMIN</option>
+                        <label for="setUserRole" class="form-label text-center-custom" style="font-weight: bold;">Role</label>
+                        <select class="form-select" id="setUserRole" th:field="*{role.roleName}" multiple style="width: 200px; height: 100px; padding: 5px;">
+                            <option value="USER">USER</option>
+                            <option value="ADMIN">ADMIN</option>
                         </select>
                     </div>
                     <div class="d-flex justify-content-end">
@@ -302,5 +327,19 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script>
+    document.getElementById('setUserRole').addEventListener('mousedown', function(e) {
+        e.preventDefault();
+
+        var select = this;
+        var scroll = select.scrollTop;
+
+        e.target.selected = !e.target.selected;
+
+        setTimeout(function() {select.scrollTop = scroll;}, 0);
+        select.focus();
+    }, false);
+</script>
+
 </body>
 </html>

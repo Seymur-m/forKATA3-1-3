@@ -4,14 +4,13 @@ package ru.kata.spring.boot_security.demo.service;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.Role;
-import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
 import java.util.List;
 
@@ -30,8 +29,6 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-
-
     @Transactional(readOnly = true)
     public List<User> findAll() {
         return userRepository.findAll();
@@ -42,7 +39,6 @@ public class UserServiceImpl implements UserService {
         if (user.getId() == null) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
-        userRepository.save(user);
         List<Role> roles = user.getRoles();
         roles.forEach(role -> {
             if (role.getId() == null) {
@@ -51,8 +47,9 @@ public class UserServiceImpl implements UserService {
         });
 
         user.setRoles(roles);
-        userRepository.save(user); // Обновляем пользователя с ролями
+        userRepository.save(user);
     }
+
 
     @Transactional(readOnly = true)
     public User findById(Long id) {
@@ -70,7 +67,7 @@ public class UserServiceImpl implements UserService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        Hibernate.initialize(user.getRoles()); // Инициализация ролей
+        Hibernate.initialize(user.getRoles());
         return user;
     }
 }

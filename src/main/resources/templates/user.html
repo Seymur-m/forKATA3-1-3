@@ -6,10 +6,24 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>User Panel</title>
+
     <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Минимальная высота на весь экран */
+        }
+
         .nav-link.custom-rounded {
             border-radius: 4px; /* Измените это значение для более или менее закругленных углов */
         }
+
         .center-abs {
             position: absolute;
             left: 50%;
